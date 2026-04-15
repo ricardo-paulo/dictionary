@@ -86,23 +86,32 @@ class AVL {
 
     }
 
-    countChildren (current) {
-        if (current == null)
-            return 0
-
-        const result1 = this.countChildren(current.left)
-        const result2 = this.countChildren(current.right)
-        
-        return result1 + result2 + 1
-    }
-
-    print (current) {
+    print (current, order) {
         if (current === null)
             return
 
-        console.log(current.portuguese)
-        this.print(current.left)
-        this.print(current.right)
+        switch (order) {
+            case 'preorder':
+                console.log(current.portuguese)
+                this.print(current.left, order)
+                this.print(current.right, order)
+                break
+            
+            case 'postorder':
+                this.print(current.left, order)
+                this.print(current.right, order)
+                console.log(current.portuguese)
+                break
+
+            case 'inorder':
+                this.print(current.left, order)
+                console.log(current.portuguese)
+                this.print(current.right, order)
+                break
+            
+            default:
+                console.error('Entrada de ordem inválida!')
+        }
     }
 }
 
