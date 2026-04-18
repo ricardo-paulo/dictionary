@@ -1,0 +1,4 @@
+Todo o backend (API) da nossa aplicação deve ser construído dentro desta pasta!
+O restante que estiver fora desta pasta será considerado do frontend (interface e lógica da aplicação Web).
+
+A pasta intitulada "data" armazena apenas o arquivo (.json) de termos.
