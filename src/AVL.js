@@ -18,10 +18,11 @@ class Term {
 
 class AVL {
 
-    constructor () {
+    constructor (empty = false) {
         this.root = null
 
-        fillTermsTree(this)
+        if (!empty)
+            fillTermsTree(this)
     }
 
     static calcHeight (reference) {
@@ -55,6 +56,21 @@ class AVL {
         const rightHeight = this.calcHeight(reference.right)
         const bf = leftHeight - rightHeight
         return bf
+    }
+
+    static rebuildAsAVL (current, tempAVL = new AVL(true)) {
+        if (current == null) 
+            return
+
+        this.rebuildAsAVL(current.left, tempAVL)
+        this.rebuildAsAVL(current.right, tempAVL)
+
+        current.parent = null
+        current.left = null
+        current.right = null
+        tempAVL.addTerm(current)
+
+        return tempAVL
     }
 
     checkBalancing (reference) {
@@ -143,22 +159,6 @@ class AVL {
         }
 
     }
-
-    // TODO Implementar método que verifique e balanceie a árvore toda. (atualmente incompleto)
-    // balanceAllTree (current) {
-    //     if (current == null)
-    //         return true
-
-    //     const resultLeft = this.balanceTree(current.left)
-    //     const resultRight = this.balanceTree(current.right)
-
-    //     const { isBalanced, desbTermSide } = this.checkBalancing(current)
-    //     if (!isBalanced)
-    //         return false
-
-    //     return resultLeft && resultRight
-
-    // }
 
     addTerm (newTerm) {
         if (!(newTerm instanceof Term)) {
