@@ -24,8 +24,8 @@ class AVL {
         fillTermsTree(this)
     }
 
-    static calcHeight (current) {
-        const { counter, max } = this.#calcHeightRecursively(current, 0, 0)
+    static calcHeight (reference) {
+        const { counter, max } = this.#calcHeightRecursively(reference, 0, 0)
         
         return max
 
@@ -50,27 +50,118 @@ class AVL {
 
     }
 
-    static checkBalancing (current) {
-        const leftHeight = this.calcHeight(current.left)
-        const rightHeight = this.calcHeight(current.right)
-        const heightDiff = leftHeight - rightHeight
-        const isBalanced = heightDiff >= -1 && heightDiff <= 1
+    static calcBF(reference) {
+        const leftHeight = this.calcHeight(reference.left)
+        const rightHeight = this.calcHeight(reference.right)
+        const bf = leftHeight - rightHeight
+        return bf
+    }
+
+    checkBalancing (reference) {
+        const bf = AVL.calcBF(reference)
+        const isBalanced = bf >= -1 && bf <= 1
         let desbTermSide = null
 
         if (!isBalanced) {
-            if (leftHeight > rightHeight) {
+            if (bf > -1) {
                 desbTermSide = 'left'
             } else {
                 desbTermSide = 'right'
             }
         }
 
-        return {isBalanced, desbTermSide}
+        return { isBalanced, desbTermSide }
+    }
+
+    checkUpBalancing (reference) {
+        if (reference == null) 
+            return
+
+        const { isBalanced, desbTermSide } = this.checkBalancing(reference)
+
+        if (!isBalanced) {
+            this.#rotate(reference, desbTermSide)
+        }
+
+        this.checkUpBalancing(reference.parent)
+    }
+
+    // Método que faz rotação dos termos tanto simples quanto dupla.
+    #rotate (desbTerm, desbTermSide) {
+        if (!(desbTerm instanceof Term)) {
+            console.error(`O objeto ${desbTerm} não é um objeto Term.`)
+            return
+        }
+        
+        let toRotateChild = desbTerm[desbTermSide]
+        
+        const bfRotateChild = AVL.calcBF(toRotateChild)
+        const doubleRotateCase1 = bfRotateChild > 0 && desbTermSide == 'right'
+        const doubleRotateCase2 = bfRotateChild < 0 && desbTermSide == 'left'
+        if (doubleRotateCase1) {
+            this.#rotate(toRotateChild, 'left')
+            toRotateChild = desbTerm[desbTermSide]
+        } else if (doubleRotateCase2) {
+            this.#rotate(toRotateChild, 'right')
+            toRotateChild = desbTerm[desbTermSide]
+        }
+
+        const rotationDirection = desbTermSide == 'left' ? 'right' : 'left'
+        const orphanSubTree = toRotateChild[rotationDirection]
+        
+
+        // Se o termo desbalanceado for a raiz
+        if (desbTerm.parent == null) {
+
+            this.root = toRotateChild
+            this.root.parent = null
+            
+            this.root[rotationDirection] = desbTerm
+            desbTerm.parent = this.root
+
+            desbTerm[desbTermSide] = orphanSubTree
+            
+            if (orphanSubTree) {
+                orphanSubTree.parent = desbTerm
+            }        
+
+        } else {
+
+            const desbTermParentSide = desbTerm.parent.left == desbTerm ? 'left' : 'right'
+            
+            desbTerm.parent[desbTermParentSide] = toRotateChild
+            toRotateChild.parent = desbTerm.parent
+            
+            if (desbTerm[desbTermSide]) {
+                desbTerm[desbTermSide] = toRotateChild[rotationDirection]
+            }
+
+            desbTerm.parent = toRotateChild
+
+            toRotateChild[rotationDirection] = desbTerm
+            
+        }
 
     }
 
+    // TODO Implementar método que verifique e balanceie a árvore toda. (atualmente incompleto)
+    // balanceAllTree (current) {
+    //     if (current == null)
+    //         return true
+
+    //     const resultLeft = this.balanceTree(current.left)
+    //     const resultRight = this.balanceTree(current.right)
+
+    //     const { isBalanced, desbTermSide } = this.checkBalancing(current)
+    //     if (!isBalanced)
+    //         return false
+
+    //     return resultLeft && resultRight
+
+    // }
+
     addTerm (newTerm) {
-        if (!newTerm instanceof Term) {
+        if (!(newTerm instanceof Term)) {
             console.log(`O objeto: ${newTerm}\nNão é um objeto de Term válido.`)
             return
         }
@@ -90,7 +181,7 @@ class AVL {
             if (current.left === null) {
                 current.left = newTerm
                 newTerm.parent = current
-                // AVL.checkBalancing(current)
+                this.checkUpBalancing(current)
             } else {
                 this.#addTermRecursively(newTerm, current.left)
             }
@@ -98,42 +189,17 @@ class AVL {
             if (current.right === null) {
                 current.right = newTerm
                 newTerm.parent = current
-                // AVL.checkBalancing(newTerm, current, newTermToLeft)
+                this.checkUpBalancing(current)
             } else {
                 this.#addTermRecursively(newTerm, current.right)
             }
         }
-    }
-
-    targetOnParentSide (target) {
-        
-        if (target.parent.left == target) {
-            return 'left'
-        } else if (target.parent.right == target) {
-            return 'right'
-        } else {
-            return 'notFound'
-        }
-
-    }
-
-    rotateTerm (anchorTerm, toLeft = true) {
-        
-        const anchorRotationDirection = this.targetOnParentSide(anchorTerm)
-        const childRotationDirection = anchorRotationDirection == 'left' ? 'right' : 'left'
-
-        if (toLeft) {
-            anchorTerm.parent[anchorRotationDirection] = anchorTerm[childRotationDirection]
-        } else {
-            anchorTerm.parent[anchorRotationDirection] = anchorTerm[childRotationDirection]
-        }
-
-    }
-
+    }    
+    
     print (current, order) {
         if (current === null)
             return
-
+        
         switch (order) {
             case 'preorder':
                 console.log(current.portuguese)
