@@ -194,7 +194,40 @@ class AVL {
                 this.#addTermRecursively(newTerm, current.right)
             }
         }
-    }    
+    }
+
+    searchTerm (target, language) {
+        if (typeof target != 'string') {
+            console.error(`O parâmetro (target) "${target}" passado não é uma string!`)
+            return
+        }
+
+        if (typeof language != 'string') {
+            console.error(`O parâmetro (language) "${language}" passado não é uma string!`)
+        }
+
+        return this.#searchRecursively(this.root, target, language)
+    }
+
+    #searchRecursively (current, target, language) {
+        if (current === null) {
+            return null
+        }
+
+        if (current[language] == target)
+            return current
+
+        const resultLeft = this.#searchRecursively(current.left, target, language)
+        if (resultLeft)
+            return resultLeft
+
+        const resultRight = this.#searchRecursively(current.right, target, language)
+        if (resultRight) {
+            return resultRight
+        }
+
+        return null
+    }
     
     print (current, order) {
         if (current === null)
