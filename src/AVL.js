@@ -74,6 +74,19 @@ class AVL {
     }
 
     checkBalancing (reference) {
+
+        if (typeof reference == 'string') 
+            reference = this.searchTerm(reference, 'portuguese')
+
+        if (!(reference instanceof Term)) {
+            console.error(`O parâmetro (reference) ${reference} passado é inválido!`)
+        }
+
+
+        return this.checkBalancingRecursively(reference)
+    }
+
+    checkBalancingRecursively (reference) {
         const bf = AVL.calcBF(reference)
         const isBalanced = bf >= -1 && bf <= 1
         let desbTermSide = null
