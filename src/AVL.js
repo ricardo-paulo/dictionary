@@ -264,7 +264,6 @@ class AVL {
         return null
     }
 
-    // TODO Criar um método para deletar um termo da árvore e balancear corretamente. Considerar que o Term pode ser a raiz, pode não ter pelo menos um dos filhos assim como pode ter os dois. Com isso, podendo haver ou não a necessidade de rotação.
     deleteTerm (target) {
         if (typeof target == 'string')
             target = this.searchTerm(target, 'portuguese')
@@ -342,6 +341,37 @@ class AVL {
                 target.parent[targetSideOnParent] = null
                 this.balanceUp(target.parent)
             }
+
+        }
+
+    }
+
+    updateTerm (term, updatedTerm) {
+        if (typeof term == 'string') {
+            term = this.searchTerm(term, 'portuguese')
+        }
+
+        if (!(term instanceof Term)) {
+            console.error(`O parâmetro (term) ${term} é inválido!`)
+            return
+        }
+        
+        if (!(updatedTerm instanceof Term)) {
+            console.error(`O parâmetro (updatedTerm) ${updatedTerm} é inválido!`)
+            return
+        }
+
+        if ((term.portuguese != updatedTerm.portuguese) ||
+        term.high_valyrian != updatedTerm.high_valyrian) {
+
+            this.deleteTerm(term)
+            this.addTerm(updatedTerm)
+
+        } else {
+
+            term.classification = updatedTerm.classification
+            term.gender = updatedTerm.gender
+            term.verbal_time = updatedTerm.verbal_time
 
         }
 
