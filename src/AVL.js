@@ -75,20 +75,24 @@ class AVL {
 
     checkBalancing (reference) {
 
-        if (typeof reference == 'string') 
+        if (typeof reference == 'string') {
             reference = this.searchTerm(reference, 'portuguese')
+            if (!reference) {
+                return null
+            }
+        }
 
         if (!(reference instanceof Term)) {
             console.error(`O parâmetro (reference) ${reference} passado é inválido!`)
         }
 
 
-        return this.checkBalancingRecursively(reference)
+        return this.#checkBalancingRecursively(reference)
     }
 
-    checkBalancingRecursively (reference) {
+    #checkBalancingRecursively (reference) {
         const bf = AVL.calcBF(reference)
-        const isBalanced = bf >= -1 && bf <= 1
+        const isBalanced = Math.abs(bf) <= 1
         let desbTermSide = null
 
         if (!isBalanced) {
@@ -102,7 +106,7 @@ class AVL {
         return { isBalanced, desbTermSide }
     }
 
-    checkUpBalancing (reference) {
+    balanceUp (reference) {
         if (reference == null) 
             return
 
@@ -112,7 +116,7 @@ class AVL {
             this.#rotate(reference, desbTermSide)
         }
 
-        this.checkUpBalancing(reference.parent)
+        this.balanceUp(reference.parent)
     }
 
     // Método que faz rotação dos termos tanto simples quanto dupla.
@@ -137,7 +141,6 @@ class AVL {
 
         const rotationDirection = desbTermSide == 'left' ? 'right' : 'left'
         const orphanSubTree = toRotateChild[rotationDirection]
-        
 
         // Se o termo desbalanceado for a raiz
         if (desbTerm.parent == null) {
@@ -194,7 +197,7 @@ class AVL {
             if (current.left === null) {
                 current.left = newTerm
                 newTerm.parent = current
-                this.checkUpBalancing(current)
+                this.balanceUp(current)
             } else {
                 this.#addTermRecursively(newTerm, current.left)
             }
@@ -202,7 +205,7 @@ class AVL {
             if (current.right === null) {
                 current.right = newTerm
                 newTerm.parent = current
-                this.checkUpBalancing(current)
+                this.balanceUp(current)
             } else {
                 this.#addTermRecursively(newTerm, current.right)
             }
@@ -221,25 +224,135 @@ class AVL {
 
         return this.#searchRecursively(this.root, target, language)
     }
-
+    
     #searchRecursively (current, target, language) {
         if (current === null) {
             return null
         }
-
+        
         if (current[language] == target)
             return current
-
+        
         const resultLeft = this.#searchRecursively(current.left, target, language)
         if (resultLeft)
             return resultLeft
-
+        
         const resultRight = this.#searchRecursively(current.right, target, language)
         if (resultRight) {
             return resultRight
         }
+        
+        return null
+    }
+    
+    //Retorna o sucessor, o precedessor ou null.
+    findAdjacent (term, sucessor = true) {
+        if (typeof term == 'string')
+            term = this.searchTerm(term, 'portuguese')
+
+        if (!(term instanceof Term)) {
+            console.error(`O parâmetro (term) ${term} é inválido!`)
+            return null
+        }
+
+        if (term.right && sucessor) {
+            return this.getLastTerm(term.right, 'left')
+        } else {
+            return this.getLastTerm(term.left, 'right')
+        }
 
         return null
+    }
+
+    // TODO Criar um método para deletar um termo da árvore e balancear corretamente. Considerar que o Term pode ser a raiz, pode não ter pelo menos um dos filhos assim como pode ter os dois. Com isso, podendo haver ou não a necessidade de rotação.
+    deleteTerm (target) {
+        if (typeof target == 'string')
+            target = this.searchTerm(target, 'portuguese')
+        
+        if (!(target instanceof Term)) {
+            console.error(`O parâmetro (target) ${target} passado é inválido.`)
+            return
+        }
+
+        let childrenCount = 0
+        if (target.left)
+            childrenCount++
+        if (target.right)
+            childrenCount++
+        
+        let substitute = null
+        switch (childrenCount) {
+
+            // O termo a ocupar o lugar do termo será seu sucessor.
+            case 2:
+                const sucessor = this.findAdjacent(target)
+                if (sucessor) {
+                    substitute = sucessor
+                } else {
+                    substitute = this.findAdjacent(target, false)
+                } 
+                break
+            
+            // O termo que irá ocupar o lugar do termo a ser deletado vai ser um filho, de forma direta.
+            case 1:
+                if (target.left) {
+                    substitute = target.left
+                } else {
+                    substitute = target.right
+                }
+                break
+        }
+
+        // Define o lado que o alvo ocupa no seu pai (se tiver).
+        let targetSideOnParent = null
+        if (target != this.root && target.parent.left == target) {
+            targetSideOnParent = 'left'
+        } else if (target != this.root && target.parent.right == target) {
+            targetSideOnParent = 'right'
+        }
+
+        if (substitute) {
+            
+            if (childrenCount == 2) {
+                target.classification = substitute.classification
+                target.gender = substitute.gender
+                target.high_valyrian = substitute.high_valyrian
+                target.portuguese = substitute.portuguese
+                target.verbal_time = substitute.verbal_time
+
+                this.balanceUp(substitute.parent)
+                this.deleteTerm(substitute)
+            } else {
+                if (targetSideOnParent) {
+                    target.parent[targetSideOnParent] = substitute
+                    substitute.parent = target.parent
+                } else {
+                    this.root = substitute
+                    substitute.parent = null
+                }
+
+                this.balanceUp(substitute.parent)
+            }
+
+        } else {
+
+            if (!targetSideOnParent) {
+                this.root = null
+            } else {
+                target.parent[targetSideOnParent] = null
+                this.balanceUp(target.parent)
+            }
+
+        }
+
+    }
+
+    getLastTerm (current, direction) {
+        if (current[direction] == null) {
+            return current
+        }
+
+        return this.getLastTerm(current[direction], direction)
     }
     
     print (current, order) {
