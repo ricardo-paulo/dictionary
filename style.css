@@ -68,7 +68,7 @@ body {
 }
 
 /* ── FILTROS ── */
-.filter-btn {
+.standard-button {
     padding: 8px 28px;
     border-radius: 20px;
     border: none;
@@ -79,16 +79,16 @@ body {
     transition: opacity 0.2s;
 }
 
-.filter-btn:hover {
+.standard-button:hover {
     opacity: 0.85;
 }
 
-.filter-btn.active {
+.standard-button.active {
     background-color: #c94444;
     color: #fff;
 }
 
-.filter-btn.inactive {
+.standard-button.inactive {
     background-color: #3d2a2a;
     color: #ccc;
 }
@@ -262,7 +262,7 @@ body {
         padding-left: 0 !important;
     }
 
-    .filter-btn {
+    .standard-button {
         padding: 6px 18px;
         font-size: 11px;
     }

@@ -1,4 +1,4 @@
-import terms from '../../data/terms.json' with {type: 'json'}
+import terms from '../../data/test.json' with {type: 'json'}
 import { Term } from '../AVL.js';
 
 function fillTermsTree (AVLtree) {

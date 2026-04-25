@@ -14,6 +14,49 @@
 <body>
 
     <div class="app-container">
+        
+        <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" data-bs-theme="dark">
+                <div class="modal-content bg-dark">
+                    <div class="modal-header text-white border-0">
+                        <h1 class="modal-title fs-5" id="editModalLabel">Editar Definição</h1>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="form-floating mb-3 text-white-50">
+                            <input type="text" class="form-control" id="portuguese-input" placeholder="Português">
+                            <label for="portuguese-input">Português</label>
+                        </div>
+
+                        <div class="form-floating mb-3 text-white-50">
+                            <input type="text" class="form-control" id="high_valyrian-input" placeholder="Alto Valiriano">
+                            <label for="high_valyrian-input">Alto Valiriano</label>
+                        </div>
+
+                        <div class="form-floating mb-3 text-white-50">
+                            <input type="text" class="form-control" id="classification-input" placeholder="Classificação">
+                            <label for="classification-input">Classificação</label>
+                        </div>
+
+                        <div class="form-floating mb-3 text-white-50">
+                            <input type="text" class="form-control" id="verbal_time-input" placeholder="Tempo Verbal">
+                            <label for="verbal_time-input">Tempo Verbal</label>
+                        </div>
+
+                        <div class="form-floating mb-3 text-white-50">
+                            <input type="text" class="form-control" id="gender-input" placeholder="Gênero">
+                            <label for="gender-input">Gênero</label>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer border-0">
+                        <button type="button" class="standard-button inactive" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="standard-button active">Salvar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <header class="topbar">
             <div class="container-fluid px-0">
@@ -36,10 +79,10 @@
 
                 <div class="col-12 col-lg-8">
 
-                    <div class="d-flex flex-wrap gap-2 mb-4">
-                        <button class="filter-btn active">Em Ordem</button>
-                        <button class="filter-btn inactive">Pré-ordem</button>
-                        <button class="filter-btn inactive">Pós-ordem</button>
+                    <div class="d-flex flex-wrap gap-2 mb-4" id="filter-buttons">
+                        <button class="standard-button active" name="inorder" id="inorder-button">Em Ordem</button>
+                        <button class="standard-button inactive" name="preorder" id="preorder-button">Pré-ordem</button>
+                        <button class="standard-button inactive" name="postorder" id="postorder-button">Pós-ordem</button>
                     </div>
 
                     <div class="words-list d-flex flex-column gap-3" id="words-list"></div>
@@ -66,6 +109,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js" defer></script>
     <script type="module" src="src/main.js" defer></script>
     <script type="module" src="custom/DefinitionCard.js" defer></script>
+
 </body>
 
 </html>
