@@ -126,7 +126,7 @@ class AVL {
     checkBalancing (reference) {
 
         if (typeof reference == 'string') {
-            reference = this.searchTerm(reference, 'portuguese')
+            reference = this.searchTerm({ portuguese: reference })
             if (!reference) {
                 return null
             }
@@ -262,36 +262,52 @@ class AVL {
         }
     }
 
-    searchTerm (target, language) {
-        if (typeof target != 'string') {
-            console.error(`O parâmetro (target) "${target}" passado não é uma string!`)
+    // TODO Modificar a forma como é parametrizado os termos a serem pesquisados, de forma que seja possível pesquisar somente a tradução em portuguese, somente pela tradução em alto valiriano e utilizando as duas ao mesmo tempo (como duas chaves primárias em SQL).
+    searchTerm ({ portuguese = null, high_valyrian = null }) {
+        if (portuguese && typeof portuguese != 'string') {
+            console.error(`O parâmetro (portuguese) "${portuguese}" passado não é uma string!`)
             return
         }
-
-        if (typeof language != 'string') {
-            console.error(`O parâmetro (language) "${language}" passado não é uma string!`)
+        
+        if (high_valyrian && typeof high_valyrian != 'string') {
+            console.error(`O parâmetro (high_valyrian) ${high_valyrian} passado não é uma string!`)
         }
 
-        return this.#searchRecursively(this.root, target, language)
+        if (!portuguese && !high_valyrian)
+            return null
+
+        return this.#searchRecursively(this.root, {portuguese, high_valyrian})
     }
     
-    #searchRecursively (current, target, language) {
+    #searchRecursively (current, {portuguese, high_valyrian}) {
         if (!current)
             return null
-        
-        if (language != 'portuguese' && language != 'high_valyrian') {
-            console.error(`O parâmetro (language) ${language} é inválido! Ele deve ser "portuguese" ou "high_valyrian".`)
-            return
-        }
 
-        if (current[language] == target)
-            return current
+        if (portuguese && high_valyrian) {
+
+            const portugueseMatch = current.portuguese == portuguese
+            const high_valyrianMatch = current.high_valyrian == high_valyrian
+
+            if (portugueseMatch && high_valyrianMatch)
+                return current
+
+        } else if (portuguese) {
+
+            if (current.portuguese == portuguese)
+                return current
+
+        } else {
+
+            if (current.high_valyrian == high_valyrian)
+                return current
+
+        }
         
-        const resultLeft = this.#searchRecursively(current.left, target, language)
+        const resultLeft = this.#searchRecursively(current.left, {portuguese, high_valyrian})
         if (resultLeft)
             return resultLeft
         
-        const resultRight = this.#searchRecursively(current.right, target, language)
+        const resultRight = this.#searchRecursively(current.right, {portuguese, high_valyrian})
         if (resultRight) {
             return resultRight
         }
@@ -302,7 +318,7 @@ class AVL {
     //Retorna o sucessor, o precedessor ou null.
     findAdjacent (term, sucessor = true) {
         if (typeof term == 'string')
-            term = this.searchTerm(term, 'portuguese')
+            term = this.searchTerm({ portuguese: term })
 
         if (!(term instanceof Term)) {
             console.error(`O parâmetro (term) ${term} é inválido!`)
@@ -320,7 +336,7 @@ class AVL {
 
     deleteTerm (target) {
         if (typeof target == 'string')
-            target = this.searchTerm(target, 'portuguese')
+            target = this.searchTerm({ portuguese: target })
         
         if (!(target instanceof Term)) {
             console.error(`O parâmetro (target) ${target} passado é inválido.`)
@@ -402,7 +418,7 @@ class AVL {
 
     updateTerm (term, updatedTerm) {
         if (typeof term == 'string') {
-            term = this.searchTerm(term, 'portuguese')
+            term = this.searchTerm({ portuguese: term })
         }
 
         if (!(term instanceof Term)) {
