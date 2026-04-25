@@ -23,20 +23,51 @@ class AVL {
 
         if (!empty)
             fillTermsTree(this)
-    }
-
-    static calcHeight (reference) {
-        const { counter, max } = this.#calcHeightRecursively(reference, 0, 0)
-        
-        return max
 
     }
     
-    static #calcHeightRecursively (current, counter, max) {
+    static rebuildAsAVL (current, tempAVL = new AVL(true)) {
+        if (current == null) 
+            return
+
+        this.rebuildAsAVL(current.left, tempAVL)
+        this.rebuildAsAVL(current.right, tempAVL)
+
+        current.parent = null
+        current.left = null
+        current.right = null
+        tempAVL.addTerm(current)
+
+        return tempAVL
+
+    }
+
+    calcDepth (reference) {
+        if (!reference.parent)
+            return 0
+
+        if (!(reference instanceof Term)) {
+            console.error(`O parâmetro (reference) ${reference} passado é inválido!`)
+        }
+
+        let count = this.calcDepth(reference.parent)
+
+        return ++count
+
+    }
+
+    calcHeight (reference) {
+        const { counter, max } = this.#calcHeightRecursively(reference)
+        
+        return max - 1
+
+    }
+    
+    #calcHeightRecursively (current, counter = 0, max = 0) {
         if (current == null) {
             return {counter, max}
         }
-        
+
         counter++
         if (counter > max) 
             max = counter
@@ -51,26 +82,45 @@ class AVL {
 
     }
 
-    static calcBF(reference) {
+    calcBreadth () {
+
+        const countersArray = new Array(this.calcHeight(this.root) + 1)
+        countersArray.fill(0)
+        const resultArray = this.#calcBreadthRecursively(this.root, countersArray)
+        
+        let biggerCount = 0
+        resultArray.forEach((element, index) => {
+            if (biggerCount < element)
+                biggerCount = element
+        });
+
+        return biggerCount
+
+    }
+
+    #calcBreadthRecursively (current, depthArrays) {
+        if (!current) 
+            return
+
+        if (!(current instanceof Term)) {
+            console.error(`O parâmetro (current) ${current} passado é inválido!`)
+        }
+
+        const currentDepth = this.calcDepth(current)
+        depthArrays[currentDepth]++
+
+        this.#calcBreadthRecursively(current.left, depthArrays)
+        this.#calcBreadthRecursively(current.right, depthArrays)
+
+        return depthArrays
+
+    }
+
+    calcBF(reference) {
         const leftHeight = this.calcHeight(reference.left)
         const rightHeight = this.calcHeight(reference.right)
         const bf = leftHeight - rightHeight
         return bf
-    }
-
-    static rebuildAsAVL (current, tempAVL = new AVL(true)) {
-        if (current == null) 
-            return
-
-        this.rebuildAsAVL(current.left, tempAVL)
-        this.rebuildAsAVL(current.right, tempAVL)
-
-        current.parent = null
-        current.left = null
-        current.right = null
-        tempAVL.addTerm(current)
-
-        return tempAVL
     }
 
     checkBalancing (reference) {
@@ -91,7 +141,7 @@ class AVL {
     }
 
     #checkBalancingRecursively (reference) {
-        const bf = AVL.calcBF(reference)
+        const bf = this.calcBF(reference)
         const isBalanced = Math.abs(bf) <= 1
         let desbTermSide = null
 
@@ -128,7 +178,7 @@ class AVL {
         
         let toRotateChild = desbTerm[desbTermSide]
         
-        const bfRotateChild = AVL.calcBF(toRotateChild)
+        const bfRotateChild = this.calcBF(toRotateChild)
         const doubleRotateCase1 = bfRotateChild > 0 && desbTermSide == 'right'
         const doubleRotateCase2 = bfRotateChild < 0 && desbTermSide == 'left'
         if (doubleRotateCase1) {
@@ -226,10 +276,14 @@ class AVL {
     }
     
     #searchRecursively (current, target, language) {
-        if (current === null) {
+        if (!current)
             return null
-        }
         
+        if (language != 'portuguese' && language != 'high_valyrian') {
+            console.error(`O parâmetro (language) ${language} é inválido! Ele deve ser "portuguese" ou "high_valyrian".`)
+            return
+        }
+
         if (current[language] == target)
             return current
         
