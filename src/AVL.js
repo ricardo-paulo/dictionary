@@ -262,7 +262,6 @@ class AVL {
         }
     }
 
-    // TODO Modificar a forma como é parametrizado os termos a serem pesquisados, de forma que seja possível pesquisar somente a tradução em portuguese, somente pela tradução em alto valiriano e utilizando as duas ao mesmo tempo (como duas chaves primárias em SQL).
     searchTerm ({ portuguese = null, high_valyrian = null }) {
         if (portuguese && typeof portuguese != 'string') {
             console.error(`O parâmetro (portuguese) "${portuguese}" passado não é uma string!`)
