@@ -5,128 +5,76 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dicionário Boladão</title>
-    <link rel="stylesheet" href="style.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="shortcut icon" href="dragon-icon.svg" type="image/x-icon">
-    <script type="module" src="src/main.js"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
     <div class="app-container">
+
         <header class="topbar">
-            <div class="logo-area">
-                <i class="fa-solid fa-dragon logo-icon"></i>
-                <h1>DICIONARIO BOLADÃO</h1>
-                <h1>DICIONÁRIO BOLADÃO</h1>
-            </div>
-            <div class="search-bar">
-                <input type="text" placeholder="BUSCAR NO DICIONÁRIO">
-                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <div class="container-fluid px-0">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                    <div class="logo-area d-flex align-items-center gap-3">
+                        <i class="fa-solid fa-dragon logo-icon"></i>
+                        <h1 class="mb-0">DICIONÁRIO BOLADÃO</h1>
+                    </div>
+
+                    <div class="search-bar d-flex align-items-center gap-2">
+                        <input type="text" placeholder="BUSCAR NO DICIONÁRIO">
+                        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                    </div>
+                </div>
             </div>
         </header>
 
         <main class="main-content">
+            <div class="row g-4">
 
-            <section class="left-column">
-                <div class="filters">
-                    <button class="filter-btn active">Ordem</button>
-                    <button class="filter-btn active">Em Ordem</button>
-                    <button class="filter-btn inactive">Pre-ordem</button>
-                    <button class="filter-btn inactive">Pós-ordem</button>
+                <div class="col-12 col-lg-8">
+
+                    <div class="d-flex flex-wrap gap-2 mb-4">
+                        <button class="filter-btn active">Em Ordem</button>
+                        <button class="filter-btn inactive">Pré-ordem</button>
+                        <button class="filter-btn inactive">Pós-ordem</button>
+                    </div>
+
+                    <div class="words-list d-flex flex-column gap-3">
+
+                        <!-- ! APENAS PARA EXEMPLO -->
+                        <definition-card 
+                        card-title="Alleee"
+                        card-sub-word="Oléee"
+                        card-description="descriçãooooo"
+                        ></definition-card>
+
+                    </div>
+
                 </div>
 
-                <div class="words-list">
-                    <div class="word-card">
-                        <div class="card-header">
-                            <div class="card-title">
-                                <i class="fa-solid fa-volume-high"></i> Lāre
-                            </div>
-                            <button class="badge-excluir">EXCLUIR <i class="fa-solid fa-chevron-down"></i></button>
-                        </div>
-                        <div class="card-body">
-                            <div class="sub-word">
-                                <i class="fa-solid fa-volume-low"></i> BUCETA
-                            </div>
-                            <p class="description">
-                                Buceta é um termo vulgar e chulo no português brasileiro, utilizado para
-                                designar a genitália feminina externa (vulva/vagina), frequentemente
-                                empregado como xingamento ou expressão de irritação.
-                            </p>
-                        </div>
+                <div class="col-12 col-lg-4">
+
+                    <!-- ? Tranformar isso em Palavra Aleatória? -->
+                    <div class="word-of-day-card">
+
+                        <h2>PALAVRA DO DIA</h2>
+                        <div class="daily-word">Dragon</div>
+
                     </div>
 
-                    <div class="word-card">
-                        <div class="card-header">
-                            <div class="card-title">
-                                <i class="fa-solid fa-volume-high"></i> Lāre
-                            </div>
-                            <i class="fa-solid fa-chevron-down arrow-icon"></i>
-                        </div>
-                        <div class="card-body">
-                            <div class="sub-word">
-                                <i class="fa-solid fa-volume-low"></i> BUCETA
-                            </div>
-                            <p class="description">
-                                Buceta é um termo vulgar e chulo no português brasileiro, utilizado para
-                                designar a genitália feminina externa (vulva/vagina), frequentemente
-                                empregado como xingamento ou expressão de irritação.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="word-card">
-                        <div class="card-header">
-                            <div class="card-title">
-                                <i class="fa-solid fa-volume-high"></i> Lāre
-                            </div>
-                            <i class="fa-solid fa-chevron-down arrow-icon"></i>
-                        </div>
-                        <div class="card-body">
-                            <div class="sub-word">
-                                <i class="fa-solid fa-volume-low"></i> BUCETA
-                            </div>
-                            <p class="description">
-                                Buceta é um termo vulgar e chulo no português brasileiro, utilizado para
-                                designar a genitália feminina externa (vulva/vagina), frequentemente
-                                empregado como xingamento ou expressão de irritação.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="word-card">
-                        <div class="card-header">
-                            <div class="card-title">
-                                <i class="fa-solid fa-volume-high"></i> Lāre
-                            </div>
-                            <i class="fa-solid fa-chevron-down arrow-icon"></i>
-                        </div>
-                        <div class="card-body">
-                            <div class="sub-word">
-                                <i class="fa-solid fa-volume-low"></i> BUCETA
-                            </div>
-                            <p class="description">
-                                Buceta é um termo vulgar e chulo no português brasileiro, utilizado para
-                                designar a genitália feminina externa (vulva/vagina), frequentemente
-                                empregado como xingamento ou expressão de irritação.
-                            </p>
-                        </div>
-                    </div>
                 </div>
-            </section>
 
-            <aside class="right-column">
-                <div class="word-of-day-card">
-                    <h2>PALAVRA DO DIA</h2>
-                    <div class="daily-word">
-                        <i class="fa-solid fa-volume-high"></i> Dragon
-                    </div>
-                </div>
-            </aside>
-
+            </div>
         </main>
+
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js" defer></script>
+    <script type="module" src="src/main.js" defer></script>
+    <script type="module" src="custom/DefinitionCard.js" defer></script>
 </body>
 
 </html>

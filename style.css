@@ -1,6 +1,5 @@
+/* ── RESET E BASE ── */
 * {
-    margin: 0;
-    padding: 0;
     box-sizing: border-box;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
@@ -10,7 +9,7 @@ body {
     min-height: 100vh;
 }
 
-/* CONTAINER PRINCIPAL */
+/* ── CONTAINER PRINCIPAL ── */
 .app-container {
     width: 100%;
     max-width: 1100px;
@@ -23,21 +22,6 @@ body {
 .topbar {
     background-color: #c94444;
     padding: 18px 40px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.logo-area {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    color: #000;
-}
-
-.logo-icon {
-    font-size: 30px;
-    color: #000;
 }
 
 .logo-area h1 {
@@ -47,14 +31,18 @@ body {
     color: #000;
 }
 
+.logo-icon {
+    font-size: 30px;
+    color: #000;
+}
+
+/* Barra de busca */
 .search-bar {
     background-color: #e8e8e8;
     border-radius: 25px;
     padding: 9px 18px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
     width: 320px;
+    max-width: 100%;
 }
 
 .search-bar input {
@@ -74,28 +62,12 @@ body {
     font-size: 14px;
 }
 
-/* ── LAYOUT PRINCIPAL ── */
+/* ── CONTEÚDO PRINCIPAL ── */
 .main-content {
-    display: flex;
     padding: 30px 40px;
-    gap: 30px;
-    align-items: flex-start;
 }
 
-/* ── COLUNA ESQUERDA ── */
-.left-column {
-    flex: 2;
-    min-width: 0;
-}
-
-/* Filtros */
-.filters {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-}
-
+/* ── FILTROS ── */
 .filter-btn {
     padding: 8px 28px;
     border-radius: 20px;
@@ -121,14 +93,11 @@ body {
     color: #ccc;
 }
 
-/* Lista de palavras */
+/* ── LISTA DE PALAVRAS ── */
 .words-list {
     background-color: #2a1f1f;
     padding: 20px;
     border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
 }
 
 /* ── CARDS ── */
@@ -136,64 +105,73 @@ body {
     background-color: #c94444;
     border-radius: 8px;
     padding: 14px 18px;
-    color: #000;
-}
-
-.card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 6px;
 }
 
 .card-title {
     font-size: 20px;
     font-weight: 800;
-    display: flex;
-    align-items: center;
-    gap: 10px;
     color: #000;
 }
 
-.arrow-icon {
-    color: #fff;
-    cursor: pointer;
-    font-size: 14px;
-}
-
-/* Botão EXCLUIR */
-.badge-excluir {
+/* ── BOTÃO OPÇÕES (DROPDOWN) ── */
+.btn-opcoes {
     background-color: #5a9090;
     color: #fff;
-    padding: 5px 12px;
+    padding: 5px 14px;
     border-radius: 14px;
     font-size: 10px;
     font-weight: 700;
     border: none;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 6px;
     letter-spacing: 0.5px;
     transition: background-color 0.2s;
+    white-space: nowrap;
 }
 
-.badge-excluir:hover {
-    background-color: #4a7a7a;
+.btn-opcoes:hover,
+.btn-opcoes:focus,
+.btn-opcoes:active {
+    background-color: #4a7a7a !important;
+    color: #fff !important;
+    box-shadow: none !important;
 }
 
-.card-body {
-    padding-left: 30px;
+/* Estilo do menu dropdown */
+.dropdown-menu {
+    background-color: #2a1f1f;
+    border: 1px solid #4a3434;
+    border-radius: 8px;
+    min-width: 140px;
+    padding: 6px 0;
 }
 
+.dropdown-item {
+    color: #eee;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 16px;
+    transition: background-color 0.15s;
+}
+
+.dropdown-item:hover {
+    background-color: #3d2a2a;
+    color: #fff;
+}
+
+.dropdown-item.text-danger {
+    color: #e07070 !important;
+}
+
+.dropdown-item.text-danger:hover {
+    background-color: #5a2020;
+    color: #ffaaaa !important;
+}
+
+/* ── CONTEÚDO DO CARD ── */
 .sub-word {
     color: #fff;
     font-size: 11px;
     font-weight: 700;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    margin-bottom: 5px;
     letter-spacing: 0.5px;
 }
 
@@ -204,11 +182,7 @@ body {
     color: #1a0a0a;
 }
 
-/* ── COLUNA DIREITA ── */
-.right-column {
-    flex: 0 0 260px;
-}
-
+/* ── PALAVRA DO DIA ── */
 .word-of-day-card {
     background-color: #c94444;
     border-radius: 10px;
@@ -228,9 +202,6 @@ body {
     font-size: 22px;
     font-weight: 800;
     color: #000;
-    display: flex;
-    align-items: center;
-    gap: 10px;
 }
 
 
@@ -238,59 +209,23 @@ body {
    RESPONSIVIDADE
    ============================================================ */
 
-/* TABLET GRANDE (até 1024px) */
-@media (max-width: 1024px) {
+/* TABLET (até 992px) */
+@media (max-width: 992px) {
     .topbar {
-        padding: 18px 30px;
+        padding: 15px 25px;
     }
 
     .main-content {
-        padding: 25px 30px;
-    }
-
-    .right-column {
-        flex: 0 0 220px;
-    }
-}
-
-/* TABLET (até 768px) */
-@media (max-width: 768px) {
-    .topbar {
-        padding: 15px 20px;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 12px;
-    }
-
-    .search-bar {
-        width: 100%;
-    }
-
-    .main-content {
-        flex-direction: column;
-        padding: 20px;
-        gap: 20px;
-    }
-
-    /* Palavra do dia vai para cima em tablet */
-    .right-column {
-        flex: none;
-        width: 100%;
-        order: -1;
+        padding: 25px;
     }
 
     .word-of-day-card {
         min-height: auto;
-        padding: 20px;
-    }
-
-    .card-title {
-        font-size: 17px;
     }
 }
 
-/* CELULAR (até 480px) */
-@media (max-width: 480px) {
+/* CELULAR (até 576px) */
+@media (max-width: 576px) {
     .topbar {
         padding: 12px 15px;
     }
@@ -303,14 +238,16 @@ body {
         font-size: 16px;
     }
 
+    .search-bar {
+        width: 100%;
+    }
+
     .main-content {
         padding: 15px;
-        gap: 15px;
     }
 
     .words-list {
         padding: 12px;
-        gap: 10px;
     }
 
     .word-card {
@@ -318,19 +255,11 @@ body {
     }
 
     .card-title {
-        font-size: 15px;
+        font-size: 16px;
     }
 
-    .card-body {
-        padding-left: 0;
-    }
-
-    .description {
-        font-size: 11px;
-    }
-
-    .filters {
-        gap: 8px;
+    .card-body-content {
+        padding-left: 0 !important;
     }
 
     .filter-btn {
@@ -340,9 +269,5 @@ body {
 
     .daily-word {
         font-size: 18px;
-    }
-
-    .word-of-day-card h2 {
-        font-size: 14px;
     }
 }
