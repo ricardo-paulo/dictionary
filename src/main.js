@@ -9,16 +9,18 @@ fillWordsList(tree, wordsList, 'inorder')
 const filterButtons = document.getElementById('filter-buttons')
 let activeFilterButton = document.getElementById('inorder-button')
 
-const formFields = {
+const editFormFields = {
     formPortuguese: document.getElementById('portuguese-input'),
     formHigh_valyrian: document.getElementById('high_valyrian-input'),
     formClassification: document.getElementById('classification-input'),
     formVerbalTime: document.getElementById('verbal_time-input'),
     formGender: document.getElementById('gender-input')
 }
+const deleteModal = document.getElementById('deleteModal')
+const delModalBody = deleteModal.querySelector('.modal-body')
 
 let oldTerm = null
-updateCardEvents(tree, formFields, oldTerm)
+updateCardEvents(tree, editFormFields, oldTerm)
 
 filterButtons.addEventListener('click', (event) => {
 
@@ -34,30 +36,34 @@ filterButtons.addEventListener('click', (event) => {
     
     wordsList.replaceChildren([])
     fillWordsList(tree, wordsList, button.name)
-    updateCardEvents(tree, formFields, oldTerm)
+    updateCardEvents(tree, editFormFields, oldTerm)
 
 })
 
-document.getElementById('modal-close-button').addEventListener('click', () => {
-    clearFormFields(formFields)
+document.querySelectorAll('.cancel-op').forEach((button) => {
 
+    button.addEventListener('click', () => {
+
+        clearFormFields(editFormFields)
+        delModalBody.replaceChildren([])
+        oldTerm = null
+
+    })
+
+})
+
+document.getElementById('create-button').addEventListener('click', () => {
     oldTerm = null
 })
 
-document.getElementById('modal-cancel-button').addEventListener('click', () => {
-    clearFormFields(formFields)
-
-    oldTerm = null
-})
-
-document.getElementById('modal-save-button').addEventListener('click', () => {
+document.getElementById('save-button').addEventListener('click', () => {
     
     const inputTerm = new Term(
-        formFields.formHigh_valyrian.value,
-        formFields.formPortuguese.value,
-        formFields.formClassification.value,
-        formFields.formVerbalTime.value,
-        formFields.formGender.value
+        editFormFields.formHigh_valyrian.value,
+        editFormFields.formPortuguese.value,
+        editFormFields.formClassification.value,
+        editFormFields.formVerbalTime.value,
+        editFormFields.formGender.value
     )
     
     if (oldTerm) {
@@ -76,51 +82,101 @@ document.getElementById('modal-save-button').addEventListener('click', () => {
         }
     }
 
-    clearFormFields(formFields)
+    clearFormFields(editFormFields)
 
     wordsList.replaceChildren([])
     fillWordsList(tree, wordsList, activeFilterButton.name)
-    updateCardEvents(tree, formFields, oldTerm)
+    updateCardEvents(tree, editFormFields, oldTerm)
     oldTerm = null
 })
 
-document.getElementById('create-button').addEventListener('click', () => {
+document.getElementById('delete-button').addEventListener('click', () => {
+
+    const target = tree.searchTerm({
+        portuguese: oldTerm.portuguese,
+        high_valyrian: oldTerm.high_valyrian
+    })
+
+    tree.deleteTerm(target)
+
+    wordsList.replaceChildren([])
+    fillWordsList(tree, wordsList, activeFilterButton.name)
+    updateCardEvents(tree, editFormFields, oldTerm)
+    delModalBody.replaceChildren([])
     oldTerm = null
+
+})
+
+document.getElementById('editModal').addEventListener('hidden.bs.modal', () => {
+
+    clearFormFields(editFormFields)
+    oldTerm = null
+
+})
+
+document.getElementById('deleteModal').addEventListener('hidden.bs.modal', () => {
+
+    delModalBody.replaceChildren([])    
+    oldTerm = null
+
 })
 
 function updateCardEvents () {
     
-    document.querySelectorAll('.option-edit').forEach((element) => {
+    document.querySelectorAll('.option-edit').forEach((editButton) => {
 
-        element.addEventListener('click', (event) => {
+        editButton.addEventListener('click', (event) => {
 
             const option = event.target.closest('button')
 
             if (!option) 
                 return
 
-            if (option.name == 'edit-button') {
-                
-                const oldTermCard = event.target.closest('.word-card')
-                //! Alterar para concordar com a tradução selecionada no dropdown de linguagem, ao lado da barra de pesquisa.
-                const defPortuguese = oldTermCard.querySelector('.card-title').innerText
-                const defHigh_valiryan = oldTermCard.querySelector('.sub-word').innerText
-                
-                oldTerm = tree.searchTerm({
-                    portuguese: defPortuguese,
-                    high_valyrian: defHigh_valiryan
-                })
+            const oldTermCard = event.target.closest('.word-card')
+            const defPortuguese = oldTermCard.querySelector('.card-title').innerText
+            const defHigh_valiryan = oldTermCard.querySelector('.sub-word').innerText
+            
+            oldTerm = tree.searchTerm({
+                portuguese: defPortuguese,
+                high_valyrian: defHigh_valiryan
+            })
 
-                formFields.formPortuguese.value = oldTerm.portuguese
-                formFields.formHigh_valyrian.value = oldTerm.high_valyrian
-                formFields.formClassification.value = oldTerm.classification
-                formFields.formVerbalTime.value = oldTerm.verbal_time
-                formFields.formGender.value = oldTerm.gender
 
-            }
+            editFormFields.formPortuguese.value = oldTerm.portuguese
+            editFormFields.formHigh_valyrian.value = oldTerm.high_valyrian
+            editFormFields.formClassification.value = oldTerm.classification
+            editFormFields.formVerbalTime.value = oldTerm.verbal_time
+            editFormFields.formGender.value = oldTerm.gender
+
 
         })
         
+    })
+
+    document.querySelectorAll('.option-delete').forEach((deleteButton) => {
+
+        deleteButton.addEventListener('click', (event) => {
+
+            const option = event.target.closest('button')
+
+            if (!option) 
+                return
+
+            const oldTermCard = event.target.closest('.word-card')
+            const defPortuguese = oldTermCard.querySelector('.card-title').innerText
+            const defHigh_valiryan = oldTermCard.querySelector('.sub-word').innerText
+
+            oldTerm = tree.searchTerm({
+                portuguese: defPortuguese,
+                high_valyrian: defHigh_valiryan
+            })
+
+            const reducedCard = oldTermCard.cloneNode(true)
+            reducedCard.querySelector('.dropdown').remove()
+            delModalBody.appendChild(reducedCard)
+
+        })
+
     })
 
 }

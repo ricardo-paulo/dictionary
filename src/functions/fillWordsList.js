@@ -19,7 +19,6 @@ function fillRecursively (current, wordsList, order) {
         return
 
     const definitionCard = document.createElement('definition-card')
-    //! Mudar de "current.portuguese" para a linguagem selecionada no dropdown de pesquisa.
     definitionCard.setAttribute('card-title', current.portuguese)
     definitionCard.setAttribute('card-sub-word', current.high_valyrian)
     const description = `${current.classification}, ${current.verbal_time}, ${current.gender}`

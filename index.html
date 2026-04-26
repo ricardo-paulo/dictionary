@@ -16,12 +16,14 @@
 
     <div class="app-container">
         
+        <!--* Modal de Criação e Atualização de Termo -->
         <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" data-bs-theme="dark">
                 <div class="modal-content bg-dark">
+                    
                     <div class="modal-header text-white border-0">
                         <h1 class="modal-title fs-5" id="editModalLabel">Editar Definição</h1>
-                        <button type="button" id="modal-close-button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn-close cancel-op" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
 
                     <div class="modal-body">
@@ -52,10 +54,34 @@
                     </div>
 
                     <div class="modal-footer border-0">
-                        <button type="button" id="modal-cancel-button" class="standard-button inactive" data-bs-dismiss="modal">Cancelar</button>
-                        <!--* Para diferenciar a operação de editar e criar um novo termo, pode-se usar a variável olTermCard (main.js). Se ela for nula, quer dizer que a operação irá CRIAR um novo termo. Se ela for diferente de null então a operação será de atualizar um termo. -->
-                        <button type="button" id="modal-save-button" class="standard-button active" data-bs-dismiss="modal">Salvar</button>
+                        <button 
+                        type="button"
+                        class="standard-button inactive cancel-op" data-bs-dismiss="modal">Cancelar</button>
+                        <button 
+                        type="button" id="save-button" class="standard-button active" data-bs-dismiss="modal">Salvar</button>
                     </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!--* Modal de Deleção de Termo -->
+        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog" data-bs-theme="dark">
+                <div class="modal-content bg-dark text-white">
+                    
+                    <div class="modal-header border-0">
+                        <h1 class="modal-title fs-5" id="deleteModalLabel">Confirme se deseja deletar essa definição:</h1>
+                        <button type="button" class="btn-close cancel-op" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    
+                    <div class="modal-body"></div>
+
+                    <div class="modal-footer border-0">
+                        <button type="button" class="standard-button inactive cancel-op" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="standard-button active" data-bs-dismiss="modal" id="delete-button">Deletar</button>
+                    </div>
+
                 </div>
             </div>
         </div>

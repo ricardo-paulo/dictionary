@@ -30,7 +30,6 @@ class DefinitionCard extends HTMLElement {
 
         const dropdownMenu = dropdown.appendChild(document.createElement('ul'))
         dropdownMenu.setAttribute('class', 'dropdown-menu dropdown-menu-end')
-        dropdownMenu.setAttribute('id', 'options-dropdown')
 
         const editButton_li = dropdownMenu.appendChild(document.createElement('li'))
 
@@ -44,9 +43,11 @@ class DefinitionCard extends HTMLElement {
         const deleteButton_li = dropdownMenu.appendChild(document.createElement('li'))
 
         const deleteButton = deleteButton_li.appendChild(document.createElement('button'))
-        deleteButton.setAttribute('class', 'dropdown-item text-danger')
+        deleteButton.setAttribute('class', 'dropdown-item text-danger option-delete')
+        deleteButton.setAttribute('data-bs-toggle', 'modal')
+        deleteButton.setAttribute('data-bs-target', '#deleteModal')
         deleteButton.setAttribute('name', 'delete-button')
-        deleteButton.innerText = '🗑️ Excluir'
+        deleteButton.innerText = '🗑️ Deletar'
 
         const cardBody = container.appendChild(document.createElement('div'))
         cardBody.setAttribute('class', 'card-body-content ps-2')
