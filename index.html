@@ -27,28 +27,28 @@
                     </div>
 
                     <div class="modal-body">
-                        <div class="form-floating mb-3 text-white-50">
-                            <input type="text" class="form-control" id="portuguese-input" placeholder="Português">
+                        <div class="form-floating mb-3 text-white-50 focus-ring">
+                            <input type="text" class="form-control focus-ring focus-ring-danger border" id="portuguese-input" placeholder="Português">
                             <label for="portuguese-input">Português</label>
                         </div>
 
                         <div class="form-floating mb-3 text-white-50">
-                            <input type="text" class="form-control" id="high_valyrian-input" placeholder="Alto Valiriano">
+                            <input type="text" class="form-control focus-ring focus-ring-danger border" id="high_valyrian-input" placeholder="Alto Valiriano">
                             <label for="high_valyrian-input">Alto Valiriano</label>
                         </div>
 
                         <div class="form-floating mb-3 text-white-50">
-                            <input type="text" class="form-control" id="classification-input" placeholder="Classificação">
+                            <input type="text" class="form-control focus-ring focus-ring-danger border" id="classification-input" placeholder="Classificação">
                             <label for="classification-input">Classificação</label>
                         </div>
 
                         <div class="form-floating mb-3 text-white-50">
-                            <input type="text" class="form-control" id="verbal_time-input" placeholder="Tempo Verbal">
+                            <input type="text" class="form-control focus-ring focus-ring-danger border" id="verbal_time-input" placeholder="Tempo Verbal">
                             <label for="verbal_time-input">Tempo Verbal</label>
                         </div>
 
                         <div class="form-floating mb-3 text-white-50">
-                            <input type="text" class="form-control" id="gender-input" placeholder="Gênero">
+                            <input type="text" class="form-control focus-ring focus-ring-danger border" id="gender-input" placeholder="Gênero">
                             <label for="gender-input">Gênero</label>
                         </div>
                     </div>
@@ -86,17 +86,28 @@
             </div>
         </div>
 
+        <!--* Página visível -->
         <header class="topbar">
             <div class="container-fluid px-0">
-                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-                    <div class="logo-area d-flex align-items-center gap-3">
+                <div class="row">
+                    <div class="col-12 col-md-7 logo-area d-flex align-items-center gap-3">
                         <i class="fa-solid fa-dragon logo-icon"></i>
                         <h1 class="mb-0">DICIONÁRIO BOLADÃO</h1>
                     </div>
 
-                    <div class="search-bar d-flex align-items-center gap-2">
-                        <input type="text" placeholder="BUSCAR NO DICIONÁRIO">
-                        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                    <div class="col input-group input-group-sm mx-0 mx-md-5 mt-2 mt-md-0">
+
+                        <select class="form-select rounded-start-pill w-25 pe-4 focus-ring focus-ring-dark" id="language-select">
+                            <option value="portuguese" aria-label="Português" selected>Português</option>
+                            <option value="high_valyrian" aria-label="Alto Valiriano">Alto Valiriano</option>
+                        </select>
+
+                        <input 
+                        type="text" 
+                        id="search-bar"
+                        class="form-control rounded-end-pill w-50 focus-ring focus-ring-dark"
+                        placeholder="Buscar palavra">
+
                     </div>
                 </div>
             </div>
@@ -109,7 +120,7 @@
 
                     <div class="row">
                         <div class="d-flex flex-wrap gap-2 mb-4 col-10" id="filter-buttons">
-                            <button class="standard-button active" name="inorder" id="inorder-button">Em Ordem</button>
+                            <button class="standard-button active focus-ring focus-ring-danger" name="inorder" id="inorder-button">Em Ordem</button>
                             <button class="standard-button inactive" name="preorder" id="preorder-button">Pré-ordem</button>
                             <button class="standard-button inactive" name="postorder" id="postorder-button">Pós-ordem</button>
                         </div>

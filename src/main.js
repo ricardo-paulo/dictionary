@@ -20,7 +20,7 @@ const deleteModal = document.getElementById('deleteModal')
 const delModalBody = deleteModal.querySelector('.modal-body')
 
 let oldTerm = null
-updateCardEvents(tree, editFormFields, oldTerm)
+updateCardEvents()
 
 filterButtons.addEventListener('click', (event) => {
 
@@ -36,7 +36,7 @@ filterButtons.addEventListener('click', (event) => {
     
     wordsList.replaceChildren([])
     fillWordsList(tree, wordsList, button.name)
-    updateCardEvents(tree, editFormFields, oldTerm)
+    updateCardEvents()
 
 })
 
@@ -86,7 +86,7 @@ document.getElementById('save-button').addEventListener('click', () => {
 
     wordsList.replaceChildren([])
     fillWordsList(tree, wordsList, activeFilterButton.name)
-    updateCardEvents(tree, editFormFields, oldTerm)
+    updateCardEvents()
     oldTerm = null
 })
 
@@ -101,7 +101,7 @@ document.getElementById('delete-button').addEventListener('click', () => {
 
     wordsList.replaceChildren([])
     fillWordsList(tree, wordsList, activeFilterButton.name)
-    updateCardEvents(tree, editFormFields, oldTerm)
+    updateCardEvents()
     delModalBody.replaceChildren([])
     oldTerm = null
 
@@ -118,6 +118,48 @@ document.getElementById('deleteModal').addEventListener('hidden.bs.modal', () =>
 
     delModalBody.replaceChildren([])    
     oldTerm = null
+
+})
+
+document.getElementById('search-bar').addEventListener('keyup', (event) => {
+
+    if (event.key == 'Enter') {
+        
+        const langSelect = document.getElementById('language-select')
+        const searchBar = document.getElementById('search-bar')
+        const langObject = Object.defineProperty({}, langSelect.value, { 
+            value: searchBar.value
+        })
+
+        if (searchBar.value.trim() == '')
+            return
+
+        const foundTerm = tree.searchTerm(langObject)
+
+        if (foundTerm) {
+            
+            wordsList.replaceChildren([])
+            
+            const foundTermCard = document.createElement('definition-card')
+            foundTermCard.setAttribute('card-title', foundTerm.portuguese)
+            foundTermCard.setAttribute('card-sub-word', foundTerm.high_valyrian)
+            const description = `${foundTerm.classification}, ${foundTerm.verbal_time}, ${foundTerm.gender}`
+            foundTermCard.setAttribute('card-description', description)
+            wordsList.appendChild(foundTermCard)
+    
+            updateCardEvents()
+            oldTerm = null
+
+        } else {
+
+            const langName = langSelect.selectedOptions.item(0).innerText
+            searchBar.blur()
+            alert(`O termo "${searchBar.value}" em ${langName} não foi encontrado!`)
+            searchBar.focus()
+
+        }
+
+    }
 
 })
 
@@ -141,13 +183,11 @@ function updateCardEvents () {
                 high_valyrian: defHigh_valiryan
             })
 
-
             editFormFields.formPortuguese.value = oldTerm.portuguese
             editFormFields.formHigh_valyrian.value = oldTerm.high_valyrian
             editFormFields.formClassification.value = oldTerm.classification
             editFormFields.formVerbalTime.value = oldTerm.verbal_time
             editFormFields.formGender.value = oldTerm.gender
-
 
         })
         

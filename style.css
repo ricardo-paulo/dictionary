@@ -36,26 +36,6 @@ body {
     color: #000;
 }
 
-/* Barra de busca */
-.search-bar {
-    background-color: #e8e8e8;
-    border-radius: 25px;
-    padding: 9px 18px;
-    width: 320px;
-    max-width: 100%;
-}
-
-.search-bar input {
-    border: none;
-    background: transparent;
-    outline: none;
-    width: 100%;
-    font-size: 11px;
-    font-weight: 700;
-    color: #666;
-    letter-spacing: 0.5px;
-}
-
 .search-icon {
     color: #666;
     cursor: pointer;
