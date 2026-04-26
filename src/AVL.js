@@ -14,6 +14,22 @@ class Term {
         this.parent = null
     }
 
+    equals (term) {
+
+        if (!(term instanceof Term)) {
+            return null
+        }
+
+        const hvEquals = this.high_valyrian == term.high_valyrian
+        const pEquals = this.portuguese == term.portuguese
+        const cEquals = this.classification == term.classification
+        const vtEquals = this.verbal_time == term.verbal_time
+        const gEquals = this.gender == term.gender
+
+        return hvEquals && pEquals && cEquals && vtEquals && gEquals
+
+    }
+
 }
 
 class AVL {

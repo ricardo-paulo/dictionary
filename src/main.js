@@ -1,5 +1,6 @@
 import {AVL, Term} from "./AVL.js"
 import fillWordsList from "./functions/fillWordsList.js"
+import clearFormFields from "./functions/clearFormFields.js"
 
 const tree = new AVL()
 const wordsList = document.getElementById('words-list')
@@ -38,17 +39,13 @@ filterButtons.addEventListener('click', (event) => {
 })
 
 document.getElementById('modal-close-button').addEventListener('click', () => {
-    Object.values(formFields).forEach((field) => {
-        field.value = null
-    })
+    clearFormFields(formFields)
 
     oldTerm = null
 })
 
 document.getElementById('modal-cancel-button').addEventListener('click', () => {
-    Object.values(formFields).forEach((field) => {
-        field.value = null
-    })
+    clearFormFields(formFields)
 
     oldTerm = null
 })
@@ -66,12 +63,28 @@ document.getElementById('modal-save-button').addEventListener('click', () => {
     if (oldTerm) {
         tree.updateTerm(oldTerm, inputTerm)
     } else {
-        tree.addTerm(inputTerm)
+
+        const similarTerm = tree.searchTerm({
+            portuguese: inputTerm.portuguese,
+            high_valyrian: inputTerm.high_valyrian
+        })
+
+        if (similarTerm && inputTerm.equals(similarTerm)) {
+            alert(`O termo inserido já existe!`)
+        } else {
+            tree.addTerm(inputTerm)
+        }
     }
+
+    clearFormFields(formFields)
 
     wordsList.replaceChildren([])
     fillWordsList(tree, wordsList, activeFilterButton.name)
     updateCardEvents(tree, formFields, oldTerm)
+    oldTerm = null
+})
+
+document.getElementById('create-button').addEventListener('click', () => {
     oldTerm = null
 })
 
