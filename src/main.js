@@ -66,23 +66,30 @@ document.getElementById('save-button').addEventListener('click', () => {
         editFormFields.formVerbalTime.value,
         editFormFields.formGender.value
     )
+
+    const duplicateTerm = tree.fullSearchTerm({
+        portuguese: inputTerm.portuguese,
+        high_valyrian: inputTerm.high_valyrian,
+        classification: inputTerm.classification,
+        verbal_time: inputTerm.verbal_time,
+        gender: inputTerm.gender
+    })
     
     // Se oldTerm != null, então é uma atualização de termo. Caso contrário é uma criação.
     if (oldTerm) {
-        tree.updateTerm(oldTerm, inputTerm)
-    } else {
+        if (duplicateTerm && !duplicateTerm.isEqualsTo(oldTerm)) {
+            
+            alert('Os campos inseridos já fazem parte de um termo existente!')
+            editFormFields.formPortuguese.focus()
+            return
 
-        const duplicateTerm = tree.fullSearchTerm({
-            portuguese: inputTerm.portuguese,
-            high_valyrian: inputTerm.high_valyrian,
-            classification: inputTerm.classification,
-            verbal_time: inputTerm.verbal_time,
-            gender: inputTerm.gender
-        })
+        } else {
+            tree.updateTerm(oldTerm, inputTerm)
+        }
+    } else {
 
         if (duplicateTerm) {
 
-            searchBar
             alert(`O termo inserido já existe!`)
             clearFormFields(editFormFields)
             return
@@ -90,6 +97,7 @@ document.getElementById('save-button').addEventListener('click', () => {
         } else {
             tree.addTerm(inputTerm)
         }
+
     }
 
     clearFormFields(editFormFields)
