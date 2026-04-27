@@ -498,8 +498,10 @@ class AVL {
             return
         }
 
-        if ((term.portuguese != updatedTerm.portuguese) ||
-        term.high_valyrian != updatedTerm.high_valyrian) {
+        const portugueseChanged = term.portuguese != updatedTerm.portuguese
+        const highValyrianChanged = term.high_valyrian != updatedTerm.high_valyrian
+
+        if (portugueseChanged || highValyrianChanged) {
 
             this.deleteTerm(term)
             this.addTerm(updatedTerm)
