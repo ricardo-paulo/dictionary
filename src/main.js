@@ -1,6 +1,7 @@
 import {AVL, Term} from "./AVL.js"
 import fillWordsList from "./functions/fillWordsList.js"
 import clearFormFields from "./functions/clearFormFields.js"
+import getTermOfCard from "./functions/termDataFromCard.js"
 
 const tree = new AVL()
 const wordsList = document.getElementById('words-list')
@@ -66,17 +67,26 @@ document.getElementById('save-button').addEventListener('click', () => {
         editFormFields.formGender.value
     )
     
+    // Se oldTerm != null, então é uma atualização de termo. Caso contrário é uma criação.
     if (oldTerm) {
         tree.updateTerm(oldTerm, inputTerm)
     } else {
 
-        const similarTerm = tree.searchTerm({
+        const duplicateTerm = tree.fullSearchTerm({
             portuguese: inputTerm.portuguese,
-            high_valyrian: inputTerm.high_valyrian
+            high_valyrian: inputTerm.high_valyrian,
+            classification: inputTerm.classification,
+            verbal_time: inputTerm.verbal_time,
+            gender: inputTerm.gender
         })
 
-        if (similarTerm && inputTerm.equals(similarTerm)) {
+        if (duplicateTerm) {
+
+            searchBar
             alert(`O termo inserido já existe!`)
+            clearFormFields(editFormFields)
+            return
+
         } else {
             tree.addTerm(inputTerm)
         }
@@ -92,9 +102,12 @@ document.getElementById('save-button').addEventListener('click', () => {
 
 document.getElementById('delete-button').addEventListener('click', () => {
 
-    const target = tree.searchTerm({
+    const target = tree.fullSearchTerm({
         portuguese: oldTerm.portuguese,
-        high_valyrian: oldTerm.high_valyrian
+        high_valyrian: oldTerm.high_valyrian,
+        classification: oldTerm.classification,
+        verbal_time: oldTerm.classification,
+        gender: oldTerm.gender
     })
 
     tree.deleteTerm(target)
@@ -131,33 +144,45 @@ document.getElementById('search-bar').addEventListener('keyup', (event) => {
             value: searchBar.value
         })
 
-        if (searchBar.value.trim() == '')
+        if (searchBar.value.trim() == '') {
+         
+            searchBar.classList.add('is-invalid')
+
+            setTimeout(() => {
+                searchBar.classList.remove('is-invalid')
+            }, 1000)
+            
             return
 
-        const foundTerm = tree.searchTerm(langObject)
+        }
+        const foundTerms = tree.searchTermLike(langObject)
+        
+        if (foundTerms.length > 0) {
 
-        if (foundTerm) {
-            
             wordsList.replaceChildren([])
+
+            foundTerms.forEach((term) => {
+
+                const foundTermCard = document.createElement('definition-card')
+                foundTermCard.setAttribute('card-title', term.portuguese)
+                foundTermCard.setAttribute('card-sub-word', term.high_valyrian)
+                const description = `${term.classification}, ${term.verbal_time}, ${term.gender}`
+                foundTermCard.setAttribute('card-description', description)
+                wordsList.appendChild(foundTermCard)
+
+            })
             
-            const foundTermCard = document.createElement('definition-card')
-            foundTermCard.setAttribute('card-title', foundTerm.portuguese)
-            foundTermCard.setAttribute('card-sub-word', foundTerm.high_valyrian)
-            const description = `${foundTerm.classification}, ${foundTerm.verbal_time}, ${foundTerm.gender}`
-            foundTermCard.setAttribute('card-description', description)
-            wordsList.appendChild(foundTermCard)
-    
-            updateCardEvents()
-            oldTerm = null
-
         } else {
-
+            
             const langName = langSelect.selectedOptions.item(0).innerText
             searchBar.blur()
             alert(`O termo "${searchBar.value}" em ${langName} não foi encontrado!`)
             searchBar.focus()
-
+            
         }
+            
+        updateCardEvents()
+        oldTerm = null
 
     }
 
@@ -175,12 +200,14 @@ function updateCardEvents () {
                 return
 
             const oldTermCard = event.target.closest('.word-card')
-            const defPortuguese = oldTermCard.querySelector('.card-title').innerText
-            const defHigh_valiryan = oldTermCard.querySelector('.sub-word').innerText
-            
-            oldTerm = tree.searchTerm({
-                portuguese: defPortuguese,
-                high_valyrian: defHigh_valiryan
+            const cardTerm = getTermOfCard(oldTermCard)
+
+            oldTerm = tree.fullSearchTerm({
+                portuguese: cardTerm.portuguese,
+                high_valyrian: cardTerm.high_valyrian,
+                classification: cardTerm.classification,
+                verbal_time: cardTerm.verbal_time,
+                gender: cardTerm.gender
             })
 
             editFormFields.formPortuguese.value = oldTerm.portuguese
@@ -203,12 +230,14 @@ function updateCardEvents () {
                 return
 
             const oldTermCard = event.target.closest('.word-card')
-            const defPortuguese = oldTermCard.querySelector('.card-title').innerText
-            const defHigh_valiryan = oldTermCard.querySelector('.sub-word').innerText
+            const cardTerm = getTermOfCard(oldTermCard)
 
-            oldTerm = tree.searchTerm({
-                portuguese: defPortuguese,
-                high_valyrian: defHigh_valiryan
+            oldTerm = tree.fullSearchTerm({
+                portuguese: cardTerm.portuguese,
+                high_valyrian: cardTerm.high_valyrian,
+                classification: cardTerm.classification,
+                verbal_time: cardTerm.verbal_time,
+                gender: cardTerm.gender
             })
 
             const reducedCard = oldTermCard.cloneNode(true)

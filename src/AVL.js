@@ -14,7 +14,7 @@ class Term {
         this.parent = null
     }
 
-    equals (term) {
+    isEqualsTo (term) {
 
         if (!(term instanceof Term)) {
             return null
@@ -141,13 +141,6 @@ class AVL {
 
     checkBalancing (reference) {
 
-        if (typeof reference == 'string') {
-            reference = this.searchTerm({ portuguese: reference })
-            if (!reference) {
-                return null
-            }
-        }
-
         if (!(reference instanceof Term)) {
             console.error(`O parâmetro (reference) ${reference} passado é inválido!`)
         }
@@ -173,7 +166,7 @@ class AVL {
     }
 
     balanceUp (reference) {
-        if (reference == null) 
+        if (!reference) 
             return
 
         const { isBalanced, desbTermSide } = this.checkBalancing(reference)
@@ -279,6 +272,45 @@ class AVL {
     }
 
     searchTerm ({ portuguese = null, high_valyrian = null }) {
+
+        if (portuguese && typeof portuguese != 'string') {
+            console.error(`O parâmetro (portuguese) "${portuguese}" passado não é uma string!`)
+            return []
+        }
+        
+        if (high_valyrian && typeof high_valyrian != 'string') {
+            console.error(`O parâmetro (high_valyrian) ${high_valyrian} passado não é uma string!`)
+            return []
+        }
+
+        if (!portuguese && !high_valyrian)
+            return []
+
+        let resultArray = []
+        this.#searchRecursively(this.root, portuguese, high_valyrian, resultArray)
+        return resultArray
+
+    }
+    
+    #searchRecursively (current, portuguese, high_valyrian, resultArray) {
+
+        if (!current)
+            return
+        
+        const portugueseMatch = current.portuguese == portuguese
+        const high_valyrianMatch = current.high_valyrian == high_valyrian
+        
+        this.#searchRecursively(current.left, portuguese, high_valyrian, resultArray)
+        this.#searchRecursively(current.right, portuguese, high_valyrian, resultArray)
+        
+        if (portugueseMatch || high_valyrianMatch) {
+            resultArray.push(current)
+        }
+
+    }
+
+    fullSearchTerm ({ portuguese, high_valyrian, classification, verbal_time, gender }) {
+
         if (portuguese && typeof portuguese != 'string') {
             console.error(`O parâmetro (portuguese) "${portuguese}" passado não é uma string!`)
             return
@@ -288,52 +320,77 @@ class AVL {
             console.error(`O parâmetro (high_valyrian) ${high_valyrian} passado não é uma string!`)
         }
 
-        if (!portuguese && !high_valyrian)
+        if (!portuguese || !high_valyrian)
             return null
 
-        return this.#searchRecursively(this.root, {portuguese, high_valyrian})
+        return this.#fullSearchRecurvively(this.root, portuguese, high_valyrian, classification, verbal_time, gender)
+        
     }
-    
-    #searchRecursively (current, {portuguese, high_valyrian}) {
+
+    #fullSearchRecurvively (current, portuguese, high_valyrian, classification, verbal_time, gender) {
+
         if (!current)
             return null
 
-        if (portuguese && high_valyrian) {
-
-            const portugueseMatch = current.portuguese == portuguese
-            const high_valyrianMatch = current.high_valyrian == high_valyrian
-
-            if (portugueseMatch && high_valyrianMatch)
-                return current
-
-        } else if (portuguese) {
-
-            if (current.portuguese == portuguese)
-                return current
-
-        } else {
-
-            if (current.high_valyrian == high_valyrian)
-                return current
-
-        }
-        
-        const resultLeft = this.#searchRecursively(current.left, {portuguese, high_valyrian})
+        const resultLeft = this.#fullSearchRecurvively(current.left, portuguese, high_valyrian, classification, verbal_time, gender)
         if (resultLeft)
             return resultLeft
-        
-        const resultRight = this.#searchRecursively(current.right, {portuguese, high_valyrian})
-        if (resultRight) {
+
+        const resultRight = this.#fullSearchRecurvively(current.right, portuguese, high_valyrian, classification, verbal_time, gender)
+        if (resultRight)
             return resultRight
+
+        const tempTerm = new Term(high_valyrian, portuguese, classification, verbal_time, gender)
+
+        if (current.isEqualsTo(tempTerm)) {
+            return current
+        }
+
+        return null
+
+    }
+
+    // TODO Criar um método para procurar por termos utilizando um fragmento de uma das traduções. Ou seja, para ser adicionado a lista de resultado ele deve CONTER o fragmento passado por parâmetro.
+    searchTermLike ({portuguese = null, high_valyrian = null}) {
+        
+        if (portuguese && typeof portuguese != 'string') {
+            console.error(`O parâmetro (portuguese) "${portuguese}" passado não é uma string!`)
+            return []
         }
         
-        return null
+        if (high_valyrian && typeof high_valyrian != 'string') {
+            console.error(`O parâmetro (high_valyrian) ${high_valyrian} passado não é uma string!`)
+            return []
+        }
+
+        if (!portuguese && !high_valyrian)
+            return []
+
+        let preResultArray = []
+        this.#searchLikeRecursively(this.root, portuguese, high_valyrian, preResultArray)
+        return preResultArray
+
+    }
+
+    #searchLikeRecursively (current, portuguese, high_valyrian, resultArray) {
+        
+        if (!current)
+            return
+        
+        const portugueseMatch = current.portuguese.includes(portuguese)
+        const high_valyrianMatch = current.high_valyrian.includes(high_valyrian)
+        
+        this.#searchLikeRecursively(current.left, portuguese, high_valyrian, resultArray)
+        this.#searchLikeRecursively(current.right, portuguese, high_valyrian, resultArray)
+        
+        if (portugueseMatch || high_valyrianMatch) {
+            resultArray.push(current)
+        }
+
     }
     
     //Retorna o sucessor, o precedessor ou null.
     findAdjacent (term, sucessor = true) {
-        if (typeof term == 'string')
-            term = this.searchTerm({ portuguese: term })
 
         if (!(term instanceof Term)) {
             console.error(`O parâmetro (term) ${term} é inválido!`)
@@ -350,8 +407,6 @@ class AVL {
     }
 
     deleteTerm (target) {
-        if (typeof target == 'string')
-            target = this.searchTerm({ portuguese: target })
         
         if (!(target instanceof Term)) {
             console.error(`O parâmetro (target) ${target} passado é inválido.`)
@@ -432,9 +487,6 @@ class AVL {
     }
 
     updateTerm (term, updatedTerm) {
-        if (typeof term == 'string') {
-            term = this.searchTerm({ portuguese: term })
-        }
 
         if (!(term instanceof Term)) {
             console.error(`O parâmetro (term) ${term} é inválido!`)
