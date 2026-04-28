@@ -1,7 +1,6 @@
 async function setRandomDef () {
 
     const randomDefDiv = document.getElementById('random-definition')
-    const termsArray = []
 
     await fetch('http://localhost:3000/api/terms')
         .then(response => response.json())
