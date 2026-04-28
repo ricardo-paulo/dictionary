@@ -17,7 +17,7 @@ class Term {
     isEqualsTo (term) {
 
         if (!(term instanceof Term)) {
-            return null
+            console.error(`O parâmetro (term) ${term} passado é inválido.`)
         }
 
         const hvEquals = this.high_valyrian == term.high_valyrian
@@ -73,7 +73,6 @@ class AVL {
 
     calcHeight (reference) {
         const { counter, max } = this.#calcHeightRecursively(reference)
-        console.log(reference)
         
         return max - 1
 
@@ -239,9 +238,9 @@ class AVL {
 
     }
 
-    addTerm (newTerm) {
+    addTerm (newTerm, save = true) {
         if (!(newTerm instanceof Term)) {
-            console.log(`O objeto: ${newTerm}\nNão é um objeto de Term válido.`)
+            console.error(`O objeto: ${newTerm}\nNão é um objeto de Term válido.`)
             return
         }
 
@@ -249,6 +248,24 @@ class AVL {
             this.root = newTerm
         } else {
             this.#addTermRecursively(newTerm, this.root)
+        }
+
+        if (save) {
+            fetch('http://localhost:3000/api/terms', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(
+                    {
+                        portuguese: newTerm.portuguese,
+                        high_valyrian: newTerm.high_valyrian,
+                        classification: newTerm.classification,
+                        verbal_time: newTerm.verbal_time,
+                        gender: newTerm.gender
+                    }
+                )
+            })
         }
 
     }
@@ -344,11 +361,19 @@ class AVL {
         if (resultRight)
             return resultRight
 
-        const tempTerm = new Term(high_valyrian, portuguese, classification, verbal_time, gender)
+        const portugueseMatch = current.portuguese == portuguese
+        const high_valyrianMatch = current.high_valyrian == high_valyrian
+        const classificationMatch = current.classification == classification
+        const verbal_timeMatch = current.verbal_time == verbal_time
+        const genderMatch = current.gender == gender
 
-        if (current.isEqualsTo(tempTerm)) {
-            return current
-        }
+        if (portugueseMatch 
+            && high_valyrianMatch 
+            && classificationMatch
+            && verbal_timeMatch
+            && genderMatch) {
+                return current
+            }
 
         return null
 
@@ -410,7 +435,7 @@ class AVL {
         return null
     }
 
-    deleteTerm (target) {
+    deleteTerm (target, save = true) {
         
         if (!(target instanceof Term)) {
             console.error(`O parâmetro (target) ${target} passado é inválido.`)
@@ -457,6 +482,26 @@ class AVL {
         } else if (target != this.root && target.parent.right == target) {
             targetSideOnParent = 'right'
         }
+        
+        console.log(target)
+
+        if (save) {
+            fetch('http://localhost:3000/api/terms', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(
+                    {
+                        portuguese: target.portuguese,
+                        high_valyrian: target.high_valyrian,
+                        classification: target.classification,
+                        verbal_time: target.verbal_time,
+                        gender: target.gender
+                    }
+                )
+            })
+        }
 
         if (substitute) {
             
@@ -467,7 +512,7 @@ class AVL {
                 target.portuguese = substitute.portuguese
                 target.verbal_time = substitute.verbal_time
 
-                this.deleteTerm(substitute)
+                this.deleteTerm(substitute, false)
                 this.balanceUp(target)
             } else {
                 if (targetSideOnParent) {
@@ -519,6 +564,33 @@ class AVL {
             term.classification = updatedTerm.classification
             term.gender = updatedTerm.gender
             term.verbal_time = updatedTerm.verbal_time
+
+            fetch('http://localhost:3000/api/terms', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(
+                {
+
+                    before: {
+                        portuguese: term.portuguese,
+                        high_valyrian: term.high_valyrian,
+                        classification: term.classification,
+                        verbal_time: term.verbal_time,
+                        gender: term.gender
+                    },
+
+                    after: {
+                        portuguese: updatedTerm.portuguese,
+                        high_valyrian: updatedTerm.high_valyrian,
+                        classification: updatedTerm.classification,
+                        verbal_time: updatedTerm.verbal_time,
+                        gender: updatedTerm.gender
+                    }
+                }
+            )
+        })
 
         }
 

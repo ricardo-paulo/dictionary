@@ -73,25 +73,22 @@ termsRouter.delete('/terms', (req, res) => {
   let file = JSON.parse(data)
   const targetTerm = req.body
 
-  const beforeLenght = file.length
+  const index = file.findIndex(term => {
+    return term.portuguese === targetTerm.portuguese &&
+      term.high_valyrian === targetTerm.high_valyrian &&
+      term.classification === targetTerm.classification &&
+      term.verbal_time === targetTerm.verbal_time &&
+      term.gender === targetTerm.gender;
+});
 
-  const foundTerm = file.find(term => {
-    return term.portuguese.toLowerCase() == targetTerm.portuguese.toLowerCase()
-    && term.high_valyrian.toLowerCase() == targetTerm.high_valyrian.toLowerCase()
-    && term.classification.toLowerCase() == targetTerm.classification.toLowerCase()
-    && term.verbal_time.toLowerCase() == targetTerm.verbal_time.toLowerCase()
-    && term.gender.toLowerCase() == targetTerm.gender.toLowerCase()
-  })
+if (index !== -1) {
+    file.splice(index, 1); 
 
-  if (foundTerm) {
-
-    file.pop(foundTerm)
-
-    fs.writeFileSync(termsFilePath, JSON.stringify(file, null, 2))
-    res.json({ message: 'Palavra removida.' })
-  } else {
-    return res.json({ message: 'Termo não encontrado.' })
-  }
+    fs.writeFileSync(termsFilePath, JSON.stringify(file, null, 2));
+    res.json({ message: 'Termo removido com sucesso!' });
+} else {
+    res.status(404).json({ message: 'Termo não encontrado.' });
+}
 
 })
 

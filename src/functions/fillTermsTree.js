@@ -2,7 +2,7 @@ import { Term } from '../AVL.js';
 
 async function fillTermsTree (AVLtree) {
     
-    await fetch('http://localhost:3000/terms')
+    await fetch('http://localhost:3000/api/terms')
         .then(response => response.json())
         .then(data => {
             data.forEach(term => {
@@ -11,7 +11,7 @@ async function fillTermsTree (AVLtree) {
                     term.verbal_time, term.gender)
             
             
-                AVLtree.addTerm(parsedTerm)
+                AVLtree.addTerm(parsedTerm, false)
             });
         })
         .catch(err => {

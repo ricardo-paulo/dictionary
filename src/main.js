@@ -112,15 +112,7 @@ document.getElementById('save-button').addEventListener('click', () => {
 
 document.getElementById('delete-button').addEventListener('click', () => {
 
-    const target = tree.fullSearchTerm({
-        portuguese: oldTerm.portuguese,
-        high_valyrian: oldTerm.high_valyrian,
-        classification: oldTerm.classification,
-        verbal_time: oldTerm.classification,
-        gender: oldTerm.gender
-    })
-
-    tree.deleteTerm(target)
+    tree.deleteTerm(oldTerm)
 
     wordsList.replaceChildren([])
     fillWordsList(tree, wordsList, activeFilterButton.name)
@@ -192,7 +184,6 @@ document.getElementById('search-bar').addEventListener('keyup', (event) => {
         }
             
         updateCardEvents()
-        oldTerm = null
 
     }
 
