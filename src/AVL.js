@@ -354,7 +354,6 @@ class AVL {
 
     }
 
-    // TODO Criar um método para procurar por termos utilizando um fragmento de uma das traduções. Ou seja, para ser adicionado a lista de resultado ele deve CONTER o fragmento passado por parâmetro.
     searchTermLike ({portuguese = null, high_valyrian = null}) {
         
         if (portuguese && typeof portuguese != 'string') {
