@@ -1,15 +1,23 @@
-import terms from '../../data/test.json' with {type: 'json'}
 import { Term } from '../AVL.js';
 
-function fillTermsTree (AVLtree) {
-    terms.forEach(term => {
-        const parsedTerm = new Term (
-            term.high_valyrian, term.portuguese, term.classification, 
-            term.verbal_time, term.gender)
+async function fillTermsTree (AVLtree) {
     
+    await fetch('http://localhost:3000/terms')
+        .then(response => response.json())
+        .then(data => {
+            data.forEach(term => {
+                const parsedTerm = new Term (
+                    term.high_valyrian, term.portuguese, term.classification, 
+                    term.verbal_time, term.gender)
+            
+            
+                AVLtree.addTerm(parsedTerm)
+            });
+        })
+        .catch(err => {
+            console.log(err)
+        })
     
-        AVLtree.addTerm(parsedTerm)
-    });
 }
 
 export default fillTermsTree
