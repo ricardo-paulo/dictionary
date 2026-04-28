@@ -3,11 +3,13 @@ import fillWordsList from "./functions/fillWordsList.js"
 import clearFormFields from "./functions/clearFormFields.js"
 import getTermOfCard from "./functions/termDataFromCard.js"
 import fillTermsTree from "./functions/fillTermsTree.js"
+import setRandomDef from "./functions/setRandomDef.js"
 
 const tree = new AVL()
 await fillTermsTree(tree)
 const wordsList = document.getElementById('words-list')
 fillWordsList(tree, wordsList, 'inorder')
+await setRandomDef()
 
 const filterButtons = document.getElementById('filter-buttons')
 let activeFilterButton = document.getElementById('inorder-button')

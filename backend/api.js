@@ -9,6 +9,10 @@ app.use(cors())
 app.use(express.json())
 app.use('/api', termsRouter)
 
-app.listen(port, () => {
-  console.log(`O servidor está rodando na porta ${port}`)
+app.listen(port, (err) => {
+  if (err) {
+    console.error(err)
+  } else {
+    console.log(`O servidor está rodando na porta ${port}`)
+  }
 })
