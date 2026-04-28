@@ -36,18 +36,14 @@ class AVL {
 
     constructor (empty = false) {
         this.root = null
-
-        if (!empty)
-            fillTermsTree(this)
-
     }
     
     static rebuildAsAVL (current, tempAVL = new AVL(true)) {
         if (current == null) 
             return
 
-        this.rebuildAsAVL(current.left, tempAVL)
-        this.rebuildAsAVL(current.right, tempAVL)
+        AVL.rebuildAsAVL(current.left, tempAVL)
+        AVL.rebuildAsAVL(current.right, tempAVL)
 
         current.parent = null
         current.left = null
@@ -59,6 +55,9 @@ class AVL {
     }
 
     calcDepth (reference) {
+        if (!reference)
+            return 0
+
         if (!reference.parent)
             return 0
 
@@ -74,6 +73,7 @@ class AVL {
 
     calcHeight (reference) {
         const { counter, max } = this.#calcHeightRecursively(reference)
+        console.log(reference)
         
         return max - 1
 
@@ -155,7 +155,7 @@ class AVL {
         let desbTermSide = null
 
         if (!isBalanced) {
-            if (bf > -1) {
+            if (bf > 1) {
                 desbTermSide = 'left'
             } else {
                 desbTermSide = 'right'
@@ -225,6 +225,10 @@ class AVL {
             
             if (desbTerm[desbTermSide]) {
                 desbTerm[desbTermSide] = toRotateChild[rotationDirection]
+            }
+
+            if (desbTerm[desbTermSide]) {
+                desbTerm[desbTermSide].parent = desbTerm
             }
 
             desbTerm.parent = toRotateChild
@@ -398,7 +402,8 @@ class AVL {
         }
 
         if (term.right && sucessor) {
-            return this.getLastTerm(term.right, 'left')
+            if (term.left)
+                return this.getLastTerm(term.right, 'left')
         } else {
             return this.getLastTerm(term.left, 'right')
         }
@@ -423,23 +428,27 @@ class AVL {
         switch (childrenCount) {
 
             // O termo a ocupar o lugar do termo será seu sucessor.
-            case 2:
+            case 2: {
                 const sucessor = this.findAdjacent(target)
                 if (sucessor) {
                     substitute = sucessor
                 } else {
                     substitute = this.findAdjacent(target, false)
                 } 
+
                 break
+            }
             
             // O termo que irá ocupar o lugar do termo a ser deletado vai ser um filho, de forma direta.
-            case 1:
+            case 1: {
                 if (target.left) {
                     substitute = target.left
                 } else {
                     substitute = target.right
                 }
+
                 break
+            }
         }
 
         // Define o lado que o alvo ocupa no seu pai (se tiver).
@@ -459,8 +468,8 @@ class AVL {
                 target.portuguese = substitute.portuguese
                 target.verbal_time = substitute.verbal_time
 
-                this.balanceUp(substitute.parent)
                 this.deleteTerm(substitute)
+                this.balanceUp(target)
             } else {
                 if (targetSideOnParent) {
                     target.parent[targetSideOnParent] = substitute

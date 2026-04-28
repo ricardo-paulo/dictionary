@@ -2,8 +2,10 @@ import {AVL, Term} from "./AVL.js"
 import fillWordsList from "./functions/fillWordsList.js"
 import clearFormFields from "./functions/clearFormFields.js"
 import getTermOfCard from "./functions/termDataFromCard.js"
+import fillTermsTree from "./functions/fillTermsTree.js"
 
 const tree = new AVL()
+await fillTermsTree(tree)
 const wordsList = document.getElementById('words-list')
 fillWordsList(tree, wordsList, 'inorder')
 
