@@ -184,6 +184,15 @@ body {
     color: #000;
 }
 
+.info-div {
+    background-color: #77baba;
+}
+
+.info-div h2 {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
 
 /* ============================================================
    RESPONSIVIDADE
