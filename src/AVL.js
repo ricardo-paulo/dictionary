@@ -483,8 +483,6 @@ class AVL {
             targetSideOnParent = 'right'
         }
         
-        console.log(target)
-
         if (save) {
             fetch('http://localhost:3000/api/terms', {
                 method: 'DELETE',

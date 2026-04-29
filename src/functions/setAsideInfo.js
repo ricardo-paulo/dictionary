@@ -10,8 +10,6 @@ function setAsideInfo (AVLtree) {
     const heightSpan = document.getElementById('height-span')
     heightSpan.innerText = ` ${treeHeight}`
 
-    console.log(treeBreadth, treeHeight)
-
 }
 
 export default setAsideInfo
